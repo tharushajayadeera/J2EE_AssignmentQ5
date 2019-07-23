@@ -58,42 +58,49 @@
         <form action="Content.jsp" method="Get">
             
             <table bgcolor="#F2EFEF" border="white" >
+                
+                <tr>
                 <th>Isbn_no</th>    
                 <th>Short desc</th> 
                 <th>Price</th>  
                 <th>Del.</th>
-                    
+                </tr>
+                
                     <%   
                     for(int i=0; i<cookies.length; i++) 
                     {
                        //Get cookies one by one using the loop
                        Cookie c = cookies[i];
                     %>         
-                            <tr>   
-                                <% if (c.getName().startsWith("ISBN"))  
-                                   {  %>
-                                       <td>                  
-                                        <% ISBN = c.getValue(); 
-                                           out.println(ISBN); %>
-                                       </td> 
-                                <% }  %>
-
-                                <% if (c.getName().startsWith("DESC"))  
-                                   {  %>
-                                       <td>                  
-                                        <% DESC = c.getValue(); 
-                                           out.println(DESC); %>
-                                       </td> 
-                                <% }  %>
-
-                                <% if (c.getName().startsWith("PRICE"))  
-                                   {  %>
-                                       <td>                  
-                                        <% PRICE = c.getValue(); 
-                                           out.println(PRICE); %>
-                                       </td> 
-                                <% }  %>                        
-                            </tr>                                         
+                        <tr>
+                            <td> 
+                            <% if (c.getName().startsWith("ISBN"))  
+                               {                                                         
+                                    ISBN = c.getValue(); 
+                                    out.println(ISBN);                                         
+                               }  
+                            %>
+                            </td>
+                            <td> 
+                            <% if (c.getName().startsWith("DESC"))  
+                               {                                                         
+                                    DESC = c.getValue(); 
+                                    out.println(DESC);                                         
+                               }  
+                            %>
+                            </td>
+                            <td> 
+                            <% if (c.getName().startsWith("PRICE"))  
+                               {                                                         
+                                    PRICE = c.getValue(); 
+                                    out.println(PRICE);                                         
+                               }  
+                            %>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="delete">
+                            </td>
+                        </tr>                                         
                 <%  }  %>
             </table> 
             <br>
