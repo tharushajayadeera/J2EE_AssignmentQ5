@@ -17,114 +17,98 @@
         <h3>Library book list</h3>
         
         <%
-            //Initialize result variable
-            String ISBN,DESC,PRICE = "";
+         // Checks for the value of isbn that it is null or not
+          String isbn = request.getParameter("isbn");
+          String desc = request.getParameter("desc");
+          String price = request.getParameter("price");
+          
+          if (isbn != null && desc != null && price != null) 
+          {
             
-            //Get input values and assign to variables
-            String isbn = request.getParameter("isbn");
-            String desc = request.getParameter("desc");
-            String price = request.getParameter("price");
+            Cookie ISBNCookies = new Cookie(("ISBN"+isbn).replaceAll(" ", ""), isbn);
+            Cookie DESCCookies = new Cookie(("DESC"+desc).replaceAll(" ", ""), desc);
+            Cookie PRICECookies = new Cookie(("PRICE"+price).replaceAll(" ", ""), price);
+
             
-            //If the user input is empty assign it in to a "-"
-            if(isbn == null)
-            {
-                isbn = "-";
-            }
-            if(desc == null)
-            {
-                desc = "-";
-            }
-            if(price == null)
-            {
-                price = "-";
-            }
+           // add cookies to response object of jsp 
+            response.addCookie(ISBNCookies);
+            response.addCookie(DESCCookies);
+            response.addCookie(PRICECookies);
             
-            //Create cookie objects with dynamic key values which can identify
-            Cookie isbncookie = new Cookie("ISBN"+isbn, isbn);
-            Cookie desccookie = new Cookie("DESC"+desc, desc);
-            Cookie pricecookie = new Cookie("PRICE"+price, price);
             
-            //Add all cookies
-            response.addCookie(isbncookie);             
-            response.addCookie(desccookie);              
-            response.addCookie(pricecookie);  
- 
-            //Read all the stored cookies from the browser
+           // redirects control to same page for new request
+            response.sendRedirect("Content.jsp");
+          }
+
+        %>
+
+        <table>
+            <tr bgcolor="#AED6F1">
+             <th>Isbn_no</th>
+             <th>Short desc</th>
+             <th>Price</th>
+             <th>Del.</th>
+            </tr>
+
+            <%
+            // getCookies() method returns array of Cookie 
+            // we iterate over it and extract ISBN, DESC and PRICE
+            // into seperate variables 
             Cookie[] cookies = request.getCookies();
             
-            if (cookies != null) 
-            {  
-        %>
-        
-        <form action="Content.jsp" method="Get">
+            String ISBN = "";
+            String DESC = "";
+            String PRICE = "";
+         
+        if(cookies != null)
+        {    
             
-            <table bgcolor="#F2EFEF" border="white" >
+            for (int i = 0; i < cookies.length; i++) 
+            {
+                Cookie cookie = cookies[i];
+          
+                //Fill all the columns of a single row by iterating
+                //the for loop 3 times
+                if(cookie.getName().startsWith("ISBN") && ISBN == "")
+                {
+                    ISBN = cookie.getValue();
+                    continue;
+                }
                 
-                <tr>
-                <th>Isbn_no</th>    
-                <th>Short desc</th> 
-                <th>Price</th>  
-                <th>Del.</th>
+                if(cookie.getName().startsWith("DESC") && DESC == "")
+                {
+                    DESC = cookie.getValue();
+                    continue;
+                }
+                
+                if(cookie.getName().startsWith("PRICE") && PRICE == "")
+                {
+                    PRICE = cookie.getValue();
+                    continue;
+                }
+            
+                //Display one filled row
+                %>
+                
+                <% if(ISBN != "" || DESC != "" || PRICE != ""){ %>
+                <tr bgcolor="#D6EAF8">
+                 <td><%=ISBN%></td>
+                 <td><%=DESC%></td>
+                 <td><%=PRICE%></td>
+                 <td><input type="checkbox" name="checked" value=""</td>
                 </tr>
-                
-                <%                      
-                    
-                %>         
-                <tr>
-                    <td> 
-                    <% 
-                    for(int i=0; i<cookies.length; i++) 
-                    {
-                        //Get cookies one by one using the loop
-                        Cookie c1 = cookies[i];
-                        if (c1.getName().startsWith("ISBN"))  
-                        {                                                         
-                            ISBN = c1.getValue(); 
-                            out.println(ISBN);                                         
-                        }
-                    }
-                    %>
-                    </td>
-                    <td> 
-                    <% 
-                    for(int i=0; i<cookies.length; i++) 
-                    {
-                        //Get cookies one by one using the loop
-                        Cookie c2 = cookies[i];
-                        if (c2.getName().startsWith("DESC"))  
-                        {                                                         
-                            DESC = c2.getValue(); 
-                            out.println(DESC);                                         
-                        }
-                    }
-                    %>
-                    </td>
-                    <td> 
-                    <% 
-                    for(int i=0; i<cookies.length; i++) 
-                    {
-                        //Get cookies one by one using the loop
-                        Cookie c3 = cookies[i];
-                        if (c3.getName().startsWith("PRICE"))  
-                        {                                                         
-                            PRICE = c3.getValue(); 
-                            out.println(PRICE);                                         
-                        }
-                    }
-                    %>
-                    </td>
-                    <td>
-                        <input type="checkbox" name="delete">
-                    </td>
-                </tr>                                         
-        <%  }  %>
-        
-            </table> 
-            <br>
-            <input type="submit" name="delete" value="Delete book(s)"/> <br>
-            
-        </form>
-                
+                <% } %>
+        <%
+                //Reset varaiables to create the next row
+                ISBN = "";
+                DESC = "";
+                PRICE = "";   
+            }
+        }
+        %>
+        </table> <br> 
+       <input type="submit" name="delete" value="Delete Book(s)"/> <br><br>
+       
         <hr>
 
         <h3>Add a book</h3>
@@ -133,7 +117,7 @@
             <input type="text" name="isbn" placeholder="Isbn number" style="background-color:#FCF5D8"/> <br> <br>
             <input type="text" name="desc" placeholder="Short desc." style="background-color:#FCF5D8"/> <br> <br>
             <input type="text" name="price" placeholder="Price" style="background-color:#FCF5D8"/> <br> <br>
-            <input type="submit" name="addbook" value="Add book"/> <br>
+            <input type="submit" name="addbook" value="Add book"/> <br> <br>
         </form>
 
         <%@ include file="Footer.jsp" %>
