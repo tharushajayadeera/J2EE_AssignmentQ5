@@ -55,6 +55,7 @@
             if (cookies != null) 
             {  
         %>
+        
         <form action="Content.jsp" method="Get">
             
             <table bgcolor="#F2EFEF" border="white" >
@@ -66,46 +67,61 @@
                 <th>Del.</th>
                 </tr>
                 
-                    <%   
+                <%                      
+                    
+                %>         
+                <tr>
+                    <td> 
+                    <% 
                     for(int i=0; i<cookies.length; i++) 
                     {
-                       //Get cookies one by one using the loop
-                       Cookie c = cookies[i];
-                    %>         
-                        <tr>
-                            <td> 
-                            <% if (c.getName().startsWith("ISBN"))  
-                               {                                                         
-                                    ISBN = c.getValue(); 
-                                    out.println(ISBN);                                         
-                               }  
-                            %>
-                            </td>
-                            <td> 
-                            <% if (c.getName().startsWith("DESC"))  
-                               {                                                         
-                                    DESC = c.getValue(); 
-                                    out.println(DESC);                                         
-                               }  
-                            %>
-                            </td>
-                            <td> 
-                            <% if (c.getName().startsWith("PRICE"))  
-                               {                                                         
-                                    PRICE = c.getValue(); 
-                                    out.println(PRICE);                                         
-                               }  
-                            %>
-                            </td>
-                            <td>
-                                <input type="checkbox" name="delete">
-                            </td>
-                        </tr>                                         
-                <%  }  %>
+                        //Get cookies one by one using the loop
+                        Cookie c1 = cookies[i];
+                        if (c1.getName().startsWith("ISBN"))  
+                        {                                                         
+                            ISBN = c1.getValue(); 
+                            out.println(ISBN);                                         
+                        }
+                    }
+                    %>
+                    </td>
+                    <td> 
+                    <% 
+                    for(int i=0; i<cookies.length; i++) 
+                    {
+                        //Get cookies one by one using the loop
+                        Cookie c2 = cookies[i];
+                        if (c2.getName().startsWith("DESC"))  
+                        {                                                         
+                            DESC = c2.getValue(); 
+                            out.println(DESC);                                         
+                        }
+                    }
+                    %>
+                    </td>
+                    <td> 
+                    <% 
+                    for(int i=0; i<cookies.length; i++) 
+                    {
+                        //Get cookies one by one using the loop
+                        Cookie c3 = cookies[i];
+                        if (c3.getName().startsWith("PRICE"))  
+                        {                                                         
+                            PRICE = c3.getValue(); 
+                            out.println(PRICE);                                         
+                        }
+                    }
+                    %>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="delete">
+                    </td>
+                </tr>                                         
+        <%  }  %>
+        
             </table> 
             <br>
             <input type="submit" name="delete" value="Delete book(s)"/> <br>
-        <%  } %>
             
         </form>
                 
