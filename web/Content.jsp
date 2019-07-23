@@ -5,7 +5,6 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="input" prefix="input" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,28 +13,92 @@
     </head>
     <body>
         <%@ include file="Header.jsp" %>
-        
+
         <h3>Library book list</h3>
         
+        <%
+            //Initialize result variable
+            String ISBN,DESC,PRICE = "";
+            
+            //Get input values and assign to variables
+            String isbn = request.getParameter("isbn");
+            String desc = request.getParameter("desc");
+            String price = request.getParameter("price");
+            
+            //If the user input is empty assign it in to a "-"
+            if(isbn == null)
+            {
+                isbn = "-";
+            }
+            if(desc == null)
+            {
+                desc = "-";
+            }
+            if(price == null)
+            {
+                price = "-";
+            }
+            
+            //Create cookie objects with dynamic key values which can identify
+            Cookie isbncookie = new Cookie("ISBN"+isbn, isbn);
+            Cookie desccookie = new Cookie("DESC"+desc, desc);
+            Cookie pricecookie = new Cookie("PRICE"+price, price);
+            
+            //Add all cookies
+            response.addCookie(isbncookie);             
+            response.addCookie(desccookie);              
+            response.addCookie(pricecookie);  
+ 
+            //Read all the stored cookies from the browser
+            Cookie[] cookies = request.getCookies();
+            
+            if (cookies != null) 
+            {  
+        %>
         <form action="Content.jsp" method="Get">
             
             <table bgcolor="#F2EFEF" border="white" >
-                
-                    <th>Isbn_no</th>    
-                    <th>Short desc</th> 
-                    <th>Price</th>  
-                    <th>Del.</th>
- 
-                        <tr>
-                        <td><%= request.getParameter("isbn") %></td>
-                        <td><%= request.getParameter("desc") %></td>
-                        <td><%= request.getParameter("price") %></td>
-                        <td><input type = "checkbox" name = "del" value="selected"/></td>
-                        </tr>
-                         
-            </table>                
+                <th>Isbn_no</th>    
+                <th>Short desc</th> 
+                <th>Price</th>  
+                <th>Del.</th>
+                    
+                    <%   
+                    for(int i=0; i<cookies.length; i++) 
+                    {
+                       //Get cookies one by one using the loop
+                       Cookie c = cookies[i];
+                    %>         
+                            <tr>   
+                                <% if (c.getName().startsWith("ISBN"))  
+                                   {  %>
+                                       <td>                  
+                                        <% ISBN = c.getValue(); 
+                                           out.println(ISBN); %>
+                                       </td> 
+                                <% }  %>
+
+                                <% if (c.getName().startsWith("DESC"))  
+                                   {  %>
+                                       <td>                  
+                                        <% DESC = c.getValue(); 
+                                           out.println(DESC); %>
+                                       </td> 
+                                <% }  %>
+
+                                <% if (c.getName().startsWith("PRICE"))  
+                                   {  %>
+                                       <td>                  
+                                        <% PRICE = c.getValue(); 
+                                           out.println(PRICE); %>
+                                       </td> 
+                                <% }  %>                        
+                            </tr>                                         
+                <%  }  %>
+            </table> 
             <br>
             <input type="submit" name="delete" value="Delete book(s)"/> <br>
+        <%  } %>
             
         </form>
                 
@@ -49,7 +112,7 @@
             <input type="text" name="price" placeholder="Price" style="background-color:#FCF5D8"/> <br> <br>
             <input type="submit" name="addbook" value="Add book"/> <br>
         </form>
-        
+
         <%@ include file="Footer.jsp" %>
     </body>
 </html>
