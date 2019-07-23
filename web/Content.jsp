@@ -22,7 +22,10 @@
           String desc = request.getParameter("desc");
           String price = request.getParameter("price");
           
-          if (isbn != null && desc != null && price != null) 
+          String checkbox = request.getParameter("checkbox");
+          out.print(checkbox);
+          
+          if (isbn != null && isbn.length() > 0 && desc != null && desc.length() > 0 && price != null && price.length() > 0) 
           {
             
             Cookie ISBNCookies = new Cookie(("ISBN"+isbn).replaceAll(" ", ""), isbn);
@@ -41,7 +44,7 @@
           }
 
         %>
-
+    <form action="Content.jsp" method="get">
         <table>
             <tr bgcolor="#AED6F1">
              <th>Isbn_no</th>
@@ -72,12 +75,15 @@
                 if(cookie.getName().startsWith("ISBN") && ISBN == "")
                 {
                     ISBN = cookie.getValue();
+                    DESC = "";
+                    PRICE = "";
                     continue;
                 }
                 
                 if(cookie.getName().startsWith("DESC") && DESC == "")
                 {
-                    DESC = cookie.getValue();
+                    DESC = cookie.getValue();                    
+                    PRICE = "";
                     continue;
                 }
                 
@@ -89,15 +95,20 @@
             
                 //Display one filled row
                 %>
-                
-                <% if(ISBN != "" || DESC != "" || PRICE != ""){ %>
-                <tr bgcolor="#D6EAF8">
-                 <td><%=ISBN%></td>
-                 <td><%=DESC%></td>
-                 <td><%=PRICE%></td>
-                 <td><input type="checkbox" name="checked" value=""</td>
-                </tr>
-                <% } %>
+
+                <% 
+                    if(ISBN != "" || DESC != "" || PRICE != "")
+                    {                  
+                %>
+                    <tr bgcolor="#D6EAF8">
+                     <td><%=ISBN%></td>
+                     <td><%=DESC%></td>
+                     <td><%=PRICE%></td>
+                     <td><input type="checkbox" name="checkbox" </td>
+                    </tr>
+                <%   
+                    }
+                %>
         <%
                 //Reset varaiables to create the next row
                 ISBN = "";
@@ -108,6 +119,7 @@
         %>
         </table> <br> 
        <input type="submit" name="delete" value="Delete Book(s)"/> <br><br>
+    </form>
        
         <hr>
 
