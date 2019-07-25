@@ -17,19 +17,29 @@
         <h3>Library book list</h3>
         
         <%
+            //Initialize all input values into variables
             String isbn = request.getParameter("isbn");
             String desc = request.getParameter("desc");
             String price = request.getParameter("price");
             
-            String inputvalue = desc + "-" + price + "=";
+            String checkbox = request.getParameter("checkbox");
+            out.print(checkbox);
             
+            /*Concatanate description and price inputs with a - to store 
+            both values the cookie's value*/ 
+            String inputvalue = desc + "-" + price;
+            
+            /*Check wheather the isbn value is not null to ensure the 
+            cookie's name is not null*/
             if (isbn != null && isbn.length() > 0) 
-            {
-                Cookie Cookies = new Cookie(isbn, inputvalue);
-
+            {    
+                //Set isbn value as cookie's name
+                Cookie Cookies = new Cookie("isbn"+isbn, inputvalue);
+                
+                //Store cookie
                 response.addCookie(Cookies);
 
-                // redirects control to same page for new request
+                //redirects control to same page for new request
                 response.sendRedirect("Content.jsp");
             }
         %>
@@ -43,31 +53,51 @@
              <th>Del.</th>
             </tr>
             <%
+                //Get all stored cookies 
                 Cookie[] cookies = request.getCookies();
-
-                for (int i = 0; i < cookies.length; i++) 
-                {
-                    Cookie cookie = cookies[i];
-                    
-                    String ISBN = cookie.getName();
-                    
-                    String Value = cookie.getValue();
-                    
-                    String[] descarr = Value.split("-");                    
-                    String DESC = descarr[0]; 
-                    
-                    String[] pricearr = Value.replaceAll(DESC+"-", "").split("=");                    
-                    String PRICE = pricearr[0];                    
+                
+                //Process only if there are cookies available
+                if (cookies!=null)
+                {                
+                    for (int i = 0; i < cookies.length; i++) 
+                    {
+                        Cookie cookie = cookies[i];
+                        
+                        /* Check wheather if the cookie startswith isbn
+                        to filter only required cookies to process */
+                        if(cookie.getName().startsWith("isbn"))
+                        {       
+    //                        if(checkbox=="on")
+    //                        {
+    //                            cookie.setMaxAge(0);
+    //                            response.addCookie(cookie);
+    //                            continue;
+    //                        }
+                            
+                            /*Remove front isbn text from the cookie name to print
+                            the real input isbn number*/
+                            String ISBN = cookie.getName().replaceAll("isbn", "");
+                            String Value = cookie.getValue();
+                            
+                            /*Split the value of the cookie to extract 
+                            description and price*/
+                            String[] descarr = Value.split("-");                    
+                            String DESC = descarr[0]; 
+                            
+                            /*Ignore extracted description text from the cookie's
+                            value to filter the price*/ 
+                            String PRICE = Value.replaceAll(DESC+"-", "");                    
                                    
-            %>
-            
-                    <tr bgcolor="#D6EAF8">
-                     <td><%=ISBN%></td>
-                     <td><%=DESC%></td>
-                     <td><%=PRICE%></td>
-                     <td><input type="checkbox" name="checkbox" </td>
-                    </tr>
-            <%
+            %>                            
+                            <tr bgcolor="#D6EAF8">
+                             <td><%=ISBN%></td>
+                             <td><%=DESC%></td>
+                             <td><%=PRICE%></td>
+                             <td><input type="checkbox" name="checkbox" </td>
+                            </tr>
+            <%              
+                        }
+                    }
                 }
             %>
         </table> <br> 
